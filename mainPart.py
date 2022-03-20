@@ -24,6 +24,8 @@ from addProductBackground import *
 from addProductFunction import *
 from addUserBackground import *
 from addUserFunction import *
+from deleteUserBackground import *
+from deleteUserFunction import *
 
 
 class signInPart(QWidget):
@@ -52,6 +54,7 @@ class adminPart(QMainWindow):
         deleteCategoryFunction().clicked.connect(self.deleteCategoryOpen)
         addProductFunction().clicked.connect(self.addProductOpen)
         addUserButtonFunction().clicked.connect(self.addUserOpen)
+        deleteUserFunction().clicked.connect(self.deleteUserOpen)
 
     def openRegisterCompany(self):
         self.registerWindow = registerPart()
@@ -104,7 +107,7 @@ class adminPart(QMainWindow):
         global foodName, foodNumber
         companyNameComboBox = comboBoxFunction().currentText()
         if companyNameComboBox != "":
-            if takeFoodNames(companyNameComboBox) != []:
+            if len(takeFoodNames(companyNameComboBox)) != 0:
                 foodName = takeFoodName(companyNameComboBox)
                 foodNumber = takeFoodNumber(companyNameComboBox, foodName)
                 foodName = takeFoodNames(companyNameComboBox)
@@ -115,6 +118,19 @@ class adminPart(QMainWindow):
         if comboBoxFunction().currentText() != "":
             self.addUserWindow = addUserPart()
             self.addUserWindow.show()
+
+    def deleteUserOpen(self):
+        global newUserPassword, newUserMail, userList
+        companyNameComboBox = comboBoxFunction().currentText()
+        if len(takeUsers(companyNameComboBox)) != 0:
+            userName = firstName(companyNameComboBox)
+            liste = userDataText(companyNameComboBox, userName)
+            newUserPassword, newUserMail = liste[0], liste[1]
+            userList = creatingList(companyNameComboBox)
+            if companyNameComboBox != "":
+                if len(takeUsers(companyNameComboBox)) != 0:
+                    self.deleteUserWindow = deleteUserPart()
+                    self.deleteUserWindow.show()
 
 
 class registerPart(QWidget):
@@ -310,6 +326,50 @@ class addUserPart(QWidget):
 class deleteUserPart(QWidget):
     def __init__(self):
         super().__init__()
+        global newUserPassword, newUserMail, userList
+        deleteUsersBackground(self, newUserPassword, newUserMail, userList)
+        deleteUserButtonFunction().clicked.connect(self.delete)
+        updateUserButtonFunction().clicked.connect(self.update)
+        usersComboBoxFunction().activated.connect(self.refleshTwo)
+
+    def refleshTwo(self):
+        global newUserPassword, newUserMail, userList
+        companyNameComboBox = comboBoxFunction().currentText()
+        userList = usersComboBoxFunction().currentText()
+        userName = takeNameFromList(userList)
+        userList = createListForReflesh(companyNameComboBox, userList)
+        liste = userDataText(companyNameComboBox, userName)
+        newUserPassword, newUserMail = liste[0], liste[1]
+        self.reflesh()
+
+    def delete(self):
+        global newUserPassword, newUserMail, userList
+        companyNameComboBox = comboBoxFunction().currentText()
+        users = usersComboBoxFunction().currentText()
+        userName = takingArgForDelete(users)[0]
+        deleteUser(userName, companyNameComboBox)
+        userList.remove(f"{users}")
+        if len(userList) == 0:
+            self.close()
+        else:
+            liste = userList[0]
+            liste = takingArgForDelete(liste)
+            newUserPassword, newUserMail = liste[1], liste[2]
+            self.reflesh()
+
+    def update(self):
+        global newUserPassword, newUserMail
+        companyNameComboBox = comboBoxFunction().currentText()
+        userName = usersComboBoxFunction().currentText()
+        userName = takingArgForDelete(userName)[0]
+        newUserPassword, newUserMail = newUserPasswordLineText(), newUserMailLineText()
+        updateUsers(companyNameComboBox, newUserPassword, newUserMail, userName)
+        self.reflesh()
+
+    def reflesh(self):
+        self.close()
+        self.deleteUserWindow = deleteUserPart()
+        self.deleteUserWindow.show()
 
 
 if __name__ == "__main__":
