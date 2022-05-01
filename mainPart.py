@@ -1,9 +1,5 @@
-import random
 import re
-import socket
-import string
-import sys
-from datetime import datetime
+
 import mysql.connector
 from PyQt5.QtCore import QRect, QPropertyAnimation
 from PyQt5.QtGui import QFont
@@ -26,6 +22,8 @@ from addUserBackground import *
 from addUserFunction import *
 from deleteUserBackground import *
 from deleteUserFunction import *
+from menuOptionsBackground import *
+from menuOptionsFunction import menuRecordFunction
 
 
 class signInPart(QWidget):
@@ -35,7 +33,7 @@ class signInPart(QWidget):
         buttonFunction().clicked.connect(self.singnUpControl)
 
     def singnUpControl(self):
-        if SignUp().result == True:
+        if SignUp().result:
             signInWindow.destroy()
             adminWindow.show()
 
@@ -55,6 +53,7 @@ class adminPart(QMainWindow):
         addProductFunction().clicked.connect(self.addProductOpen)
         addUserButtonFunction().clicked.connect(self.addUserOpen)
         deleteUserFunction().clicked.connect(self.deleteUserOpen)
+        menuOptionsFunction().clicked.connect(self.menuOptionsOpen)
 
     def openRegisterCompany(self):
         self.registerWindow = registerPart()
@@ -115,22 +114,22 @@ class adminPart(QMainWindow):
                 self.addProductWindow.show()
 
     def addUserOpen(self):
-        if comboBoxFunction().currentText() != "":
-            self.addUserWindow = addUserPart()
-            self.addUserWindow.show()
+        self.addUserWindow = addUserPart()
+        self.addUserWindow.show()
 
     def deleteUserOpen(self):
         global newUserPassword, newUserMail, userList
-        companyNameComboBox = comboBoxFunction().currentText()
-        if len(takeUsers(companyNameComboBox)) != 0:
-            userName = firstName(companyNameComboBox)
-            liste = userDataText(companyNameComboBox, userName)
+        if len(takeUsers()) != 0:
+            userName = firstName()
+            liste = userDataText(userName)
             newUserPassword, newUserMail = liste[0], liste[1]
-            userList = creatingList(companyNameComboBox)
-            if companyNameComboBox != "":
-                if len(takeUsers(companyNameComboBox)) != 0:
-                    self.deleteUserWindow = deleteUserPart()
-                    self.deleteUserWindow.show()
+            userList = creatingList()
+            self.deleteUserWindow = deleteUserPart()
+            self.deleteUserWindow.show()
+
+    def menuOptionsOpen(self):
+        self.menuOptionsWindow = menuOptionsPart()
+        self.menuOptionsWindow.show()
 
 
 class registerPart(QWidget):
@@ -202,8 +201,6 @@ class deleteFoodPart(QWidget):
         super().__init__()
         global companyNameComboBox, foodNameCat, foodPrice, foodName
         companyNameComboBox = comboBoxFunction().currentText()
-        print("sa")
-        print(foodNameCat, foodPrice, foodName)
         deleteFoodsBackground(self, companyNameComboBox, foodNameCat, foodPrice, foodName)
         foodListComboBoxFunction().activated.connect(self.reflesh)
         updateFoodFunction().clicked.connect(self.updateFood)
@@ -316,11 +313,10 @@ class addUserPart(QWidget):
         addUserRegisterButtonFunction().clicked.connect(self.record)
 
     def record(self):
-        companyNameComboBox = comboBoxFunction().currentText()
         userName, userPassword, userMail = addUserNameText(), addUserPasswordText(), addUserMailText()
         if mailCheck(userMail):
-            if userName not in takeUsers(companyNameComboBox) and userMail not in takeUserMails(companyNameComboBox):
-                userRecord(companyNameComboBox, userName, userPassword, userMail)
+            if userName not in takeUsers() and userMail not in takeUserMails():
+                userRecord(userName, userPassword, userMail)
 
 
 class deleteUserPart(QWidget):
@@ -334,20 +330,18 @@ class deleteUserPart(QWidget):
 
     def refleshTwo(self):
         global newUserPassword, newUserMail, userList
-        companyNameComboBox = comboBoxFunction().currentText()
         userList = usersComboBoxFunction().currentText()
         userName = takeNameFromList(userList)
-        userList = createListForReflesh(companyNameComboBox, userList)
-        liste = userDataText(companyNameComboBox, userName)
+        userList = createListForReflesh(userList)
+        liste = userDataText(userName)
         newUserPassword, newUserMail = liste[0], liste[1]
         self.reflesh()
 
     def delete(self):
         global newUserPassword, newUserMail, userList
-        companyNameComboBox = comboBoxFunction().currentText()
         users = usersComboBoxFunction().currentText()
         userName = takingArgForDelete(users)[0]
-        deleteUser(userName, companyNameComboBox)
+        deleteUser(userName)
         userList.remove(f"{users}")
         if len(userList) == 0:
             self.close()
@@ -359,17 +353,57 @@ class deleteUserPart(QWidget):
 
     def update(self):
         global newUserPassword, newUserMail
-        companyNameComboBox = comboBoxFunction().currentText()
         userName = usersComboBoxFunction().currentText()
         userName = takingArgForDelete(userName)[0]
         newUserPassword, newUserMail = newUserPasswordLineText(), newUserMailLineText()
-        updateUsers(companyNameComboBox, newUserPassword, newUserMail, userName)
+        updateUsers(newUserPassword, newUserMail, userName)
         self.reflesh()
 
     def reflesh(self):
         self.close()
         self.deleteUserWindow = deleteUserPart()
         self.deleteUserWindow.show()
+
+
+class menuOptionsPart(QWidget):
+    def __init__(self):
+        super().__init__()
+        companyNameComboBox = comboBoxFunction().currentText()
+        menuOptionsBackground(self, companyNameComboBox)
+        menuRecordButtonFunction().clicked.connect(self.menuRecord)
+
+    def menuRecord(self):
+        menuName, height, widght, fontColor, titleColor, fontType, startX, startY, categoryBetween, fontSize, titleSize, fontBetweenSize, titleBetweenSizeX, titleBetweenSizeY, priceColor, unitName = menuNameText(), menuHeightText(), menuWidghtText(), fontColorText(), titleColorText(), fontTypeText(), startXText(), startYText(), categoryBetweenText(), fontSizeText(), titleSizeText(), fontBetweenSizeText(), titleBetweenSizeXText(), titleBetweenSizeYText(), priceColorText(), unitNameText()
+        noneStrList = [str(height), str(widght), str(startX), str(startY), str(categoryBetween), str(fontSize),
+                       str(titleSize), str(fontBetweenSize), str(titleBetweenSizeX), str(titleBetweenSizeY)]
+        noneIntList = [str(menuName),str(fontColor), str(titleColor), str(priceColor), str(unitName),str(fontType)]
+        flag = True
+        print(noneStrList , noneIntList)
+        for x in noneStrList:
+            if len(re.findall("\D+", x)) != 0:
+                print(re.findall("\D+", x))
+                print(x)
+                print("STR")
+                flag = False
+                break
+        for x in noneIntList:
+
+            if len(re.findall("\d+", x)) != 0:
+                print(x)
+                print("INT")
+                flag = False
+                break
+        print(flag)
+        if flag:
+            companyNameComboBox = comboBoxFunction().currentText()
+            noneStrList.extend(noneIntList)
+            menuRecordFunction(noneStrList,companyNameComboBox)
+            self.reflesh()
+
+    def reflesh(self):
+        self.close()
+        self.menuOptionsWindow = menuOptionsPart()
+        self.menuOptionsWindow.show()
 
 
 if __name__ == "__main__":

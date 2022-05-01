@@ -36,9 +36,9 @@ def foodsRecord(foodName, foodPrice, companyNameComboBox, selectCategoryName):
     if foodPrice == "" or foodName == "":
         print("Bos deger")
     else:
-        result = len(re.findall("\D+", str(foodPrice)))
+        result = len(re.findall("\d+", str(foodPrice)))
         if companyNameComboBox in companyNameList():
-            if foodName not in takeFoodNames(companyNameComboBox) and result == 0:
+            if foodName not in takeFoodNames(companyNameComboBox) and result != 0:
                 db = connectToCompanyDataDb(companyNameComboBox)
                 cursor = db.cursor()
                 sql = f"INSERT INTO foodrecords (name,price,category,code,number,crdate) VALUES ('{foodName}','{foodPrice}','{selectCategoryName}','{createCode()}','0','{timeSettings()}')"

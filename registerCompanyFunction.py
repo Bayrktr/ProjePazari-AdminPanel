@@ -16,7 +16,7 @@ def connectToCompanyDataDb(companyName):
 
 
 def mailCheck():
-    if str(companyMailText()).endswith('@gmail.com') == True or str(companyMailText()).endswith('@outlook.com') == True:
+    if str(companyMailText()).endswith('@gmail.com') or str(companyMailText()).endswith('@outlook.com'):
         return True
     else:
         return False
@@ -40,7 +40,9 @@ def recordCompany(companyName, companyMail, companyPasswrd, code=createCode()):
         cursor.execute(sql)
         sql = "CREATE TABLE categoryrecords (name TEXT,code TEXT,crdate DATE)"
         cursor.execute(sql)
-        sql = "CREATE TABLE userrecords (name TEXT,password TEXT,mail TEXT,crdate DATE)"
+        sql = "CREATE TABLE foodhistory (person TEXT,names TEXT,numbers TEXT,desknumber TEXT,crdate DATE)"
+        cursor.execute(sql)
+        sql = "CREATE TABLE menuOptions (name TEXT, height TEXT,widght TEXT, fontColor TEXT, titleColor TEXT ,fontType TEXT,fontSize TEXT,titleSize TEXT,categoryBetween TEXT,startX TEXT,startY TEXT,fontBetweenSize TEXT,titleBetweenSizeX TEXT,titleBetweenSizeY TEXT,priceColor TEXT,unitName TEXT,crdate DATE)"
         cursor.execute(sql)
         recordToSystem()
 
@@ -49,10 +51,10 @@ def recordCompany(companyName, companyMail, companyPasswrd, code=createCode()):
         cursor = db.cursor()
         sql = f"CREATE DATABASE {companyName}"
         cursor.execute(sql)
+        db.commit()
         createTables()
 
     def recordToSystem(db=openMysql()):
-        print(companyName, companyPasswrd, companyMail)
         cursor = db.cursor()
         sql = f"INSERT INTO companyrecords (name,password,code,mail,activity,fromip,crdate) VALUES ('{companyName}','{companyMail}','{code}','{companyPasswrd}','1','{takeIp()}','{timeSettings()}')"
         cursor.execute(sql)
@@ -64,12 +66,11 @@ def recordCompany(companyName, companyMail, companyPasswrd, code=createCode()):
 class Register:
     def __init__(self):
         super().__init__()
+        self.registerFunc()
 
-        def registerFunc():
-            companyName, companyPasswrd, companyMail = companyNameText(), companyPasswordText(), companyMailText()
-            if companyName not in companyNameList():
-                if mailCheck() == True and companyMail not in companyMailList():
-                    recordCompany(companyName, companyPasswrd, companyMail)
-                    print("{} adlı şirket mevcut degıl olusturuluyor...".format(companyName))
-
-        registerFunc()
+    def registerFunc(self):
+        companyName, companyPasswrd, companyMail = companyNameText(), companyPasswordText(), companyMailText()
+        if companyName not in companyNameList():
+            if mailCheck() and companyMail not in companyMailList():
+                recordCompany(companyName, companyPasswrd, companyMail)
+                print("{} adlı şirket mevcut degıl olusturuluyor...".format(companyName))

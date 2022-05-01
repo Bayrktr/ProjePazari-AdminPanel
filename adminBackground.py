@@ -16,7 +16,7 @@ butonColor = "orange"
 
 
 def adminBackground(self):
-    global registerButton, refleshButton, deleteButton, comboBox, addCategoryToCompany, addfoodToCompany, deleteFoodsButton, deletecategorysButton, addProductButton, addUserButton, deleteUserButton
+    global registerButton, refleshButton, deleteButton, comboBox, addCategoryToCompany, addfoodToCompany, deleteFoodsButton, deletecategorysButton, addProductButton, addUserButton, deleteUserButton, menuOptionsButton
     companyList = companyNameList()
     companyList.remove("admin")
     self.setWindowTitle("Admin")
@@ -95,6 +95,12 @@ def adminBackground(self):
                                    "{"
                                    f"background-color : {butonColor};"
                                    "}")
+    menuOptionsButton = QPushButton("MenuOptions", self)
+    menuOptionsButton.setGeometry(10, 460, 100, 40)
+    menuOptionsButton.setStyleSheet("QPushButton"
+                                    "{"
+                                    f"background-color : {butonColor};"
+                                    "}")
 
 
 def data(self):
@@ -169,3 +175,8 @@ def addUserButtonFunction():
 def deleteUserFunction():
     global deleteUserButton
     return deleteUserButton
+
+
+def menuOptionsFunction():
+    global menuOptionsButton
+    return menuOptionsButton

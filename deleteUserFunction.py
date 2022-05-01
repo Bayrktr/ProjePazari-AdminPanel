@@ -15,18 +15,18 @@ def takeNameFromList(userList):
     return liste
 
 
-def deleteUser(userList, companyNameComboBox):
-    db = connectToCompanyDataDb(companyNameComboBox)
+def deleteUser(userList):
+    db = openMysql()
     cursor = db.cursor()
     sql = f"DELETE FROM userrecords WHERE name = '{userList}'"
     cursor.execute(sql)
     db.commit()
 
 
-def userDataText(companyNameComboBox, userName):
+def userDataText(userName):
     liste = []
     words = ["password", "mail"]
-    db = connectToCompanyDataDb(companyNameComboBox)
+    db = openMysql()
     cursor = db.cursor()
     for x in words:
         sql = f"SELECT {x} FROM userrecords WHERE name = '{userName}'"
@@ -36,17 +36,17 @@ def userDataText(companyNameComboBox, userName):
     return liste
 
 
-def firstName(companyNameComboBox):
-    db = connectToCompanyDataDb(companyNameComboBox)
+def firstName():
+    db = openMysql()
     cursor = db.cursor()
     sql = "SELECT name FROM userrecords"
     cursor.execute(sql)
     return cursor.fetchone()[0]
 
 
-def creatingList(companyNameComboBox):
+def creatingList():
     liste = []
-    db = connectToCompanyDataDb(companyNameComboBox)
+    db = openMysql()
     cursor = db.cursor()
     sql = "SELECT * FROM userrecords"
     cursor.execute(sql)
@@ -58,9 +58,9 @@ def creatingList(companyNameComboBox):
     return liste
 
 
-def createListForReflesh(companyNameComboBox, userList):
+def createListForReflesh(userList):
     liste = []
-    db = connectToCompanyDataDb(companyNameComboBox)
+    db = openMysql()
     cursor = db.cursor()
     sql = "SELECT * FROM userrecords"
     cursor.execute(sql)
@@ -79,10 +79,10 @@ def takingArgForDelete(liste):
     return liste
 
 
-def updateUsers(companyNameComboBox, newUserPassword, newUserMail, userName):
+def updateUsers(newUserPassword, newUserMail, userName):
     words = ["password", "mail"]
     arg = [newUserPassword, newUserMail]
-    db = connectToCompanyDataDb(companyNameComboBox)
+    db = openMysql()
     cursor = db.cursor()
     for x, y in zip(words, arg):
         sql = f"UPDATE userrecords SET {x} = '{y}' WHERE name = '{userName}'"

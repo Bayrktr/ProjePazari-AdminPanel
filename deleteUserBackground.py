@@ -42,19 +42,6 @@ def deleteUsersBackground(self, newUserPassword, newUserMail, userList):
     newUserMailLine.setStyleSheet("background-color:lightgreen")
 
 
-def creatingList(companyNameComboBox):
-    liste = []
-    db = connectToCompanyDataDb(companyNameComboBox)
-    cursor = db.cursor()
-    sql = "SELECT * FROM userrecords"
-    cursor.execute(sql)
-    for x in cursor.fetchall():
-        kelime = ""
-        for y in x:
-            kelime += (str(y) + 3 * " ")
-        liste.append(kelime)
-    return liste
-
 
 def deleteUserButtonFunction():
     global deleteUserButton

@@ -10,9 +10,9 @@ from addCategoryFunction import *
 from adminFunction import *
 
 
-def takeUsers(companyNameComboBox):
+def takeUsers():
     liste = []
-    db = connectToCompanyDataDb(companyNameComboBox)
+    db = openMysql()
     cursor = db.cursor()
     sql = f"SELECT name FROM userrecords"
     cursor.execute(sql)
@@ -21,9 +21,9 @@ def takeUsers(companyNameComboBox):
     return liste
 
 
-def takeUserMails(companyNameComboBox):
+def takeUserMails():
     liste = []
-    db = connectToCompanyDataDb(companyNameComboBox)
+    db = openMysql()
     cursor = db.cursor()
     sql = f"SELECT mail FROM userrecords"
     cursor.execute(sql)
@@ -32,8 +32,8 @@ def takeUserMails(companyNameComboBox):
     return liste
 
 
-def userRecord(companyNameComboBox, userName, userPassword, userMail):
-    db = connectToCompanyDataDb(companyNameComboBox)
+def userRecord(userName, userPassword, userMail):
+    db = openMysql()
     cursor = db.cursor()
     sql = f"INSERT INTO userrecords (name, password,mail,crdate) VALUES ('{userName}','{userPassword}','{userMail}','{timeSettings()}')"
     cursor.execute(sql)
