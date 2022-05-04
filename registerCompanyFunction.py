@@ -42,7 +42,7 @@ def recordCompany(companyName, companyMail, companyPasswrd, code=createCode()):
         cursor.execute(sql)
         sql = "CREATE TABLE foodhistory (person TEXT,names TEXT,numbers TEXT,desknumber TEXT,crdate DATE)"
         cursor.execute(sql)
-        sql = "CREATE TABLE menuOptions (name TEXT, height TEXT,widght TEXT, fontColor TEXT, titleColor TEXT ,fontType TEXT,fontSize TEXT,titleSize TEXT,categoryBetween TEXT,startX TEXT,startY TEXT,fontBetweenSize TEXT,titleBetweenSizeX TEXT,titleBetweenSizeY TEXT,priceColor TEXT,unitName TEXT,crdate DATE)"
+        sql = "CREATE TABLE menuOptions (name TEXT, height TEXT,widght TEXT, fontColor TEXT, titleColor TEXT ,fontType TEXT,fontSize TEXT,titleSize TEXT,categoryBetween TEXT,startX TEXT,startY TEXT,fontBetweenSize TEXT,titleBetweenSizeX TEXT,titleBetweenSizeY TEXT,priceColor TEXT,unitName TEXT,flag BOOL,crdate DATE)"
         cursor.execute(sql)
         recordToSystem()
 

@@ -5,7 +5,7 @@ from PyQt5.QtGui import QFont, QIcon, QPixmap
 
 def menuOptionsBackground(self, companyNameComboBox):
     global menuName, menuHeight, menuWidght, fontColor, titleColor, fontType, startX, startY, categoryBetween, fontSize, titleSize, fontBetweenSize, titleBetweenSizeX, titleBetweenSizeY, priceColor, unitName, menuRecordButton
-    self.setFixedSize(800, 600)
+    self.setFixedSize(1000, 600)
     self.setWindowTitle("RegisterCompany")
     self.setStyleSheet("background-color: gray")
     menuName = QLineEdit("Menu Name", self)
@@ -59,35 +59,49 @@ def menuOptionsBackground(self, companyNameComboBox):
     menuRecordButton = QPushButton("Record", self)
     menuRecordButton.setGeometry(120, 360, 100, 40)
     menuRecordButton.setStyleSheet("background-color: orange")
-    menuStartX = 300
-    menuStartY = 10
-    for x in menuTexts(companyNameComboBox)[0]:
-        text = QLabel(f"{x}", self)
-        text.setGeometry(menuStartX, menuStartY, 400, 30)
-        text.setStyleSheet("color: yellow;")
-        text.setFont(QFont('Times New Roman', 5))
+    menuStartX = 350
+    menuStartY = 30
+    for x in menuTexts(companyNameComboBox):
+        word = ""
+        for y in x:
+            print(y)
+            word += str(y) + " "
+        text = QLabel(f"{word}", self)
+        text.setGeometry(menuStartX, menuStartY, 600, 30)
+        text.setStyleSheet("color: black;")
+        text.setStyleSheet("background-color: orange")
+        text.setFont(QFont('Times New Roman', 8))
         menuStartY += 30
-
+"""
+    menuNamesComboBox = QComboBox(self)
+    menuNamesComboBox.setGeometry(180, 20, 120, 50)
+    menuNamesComboBox.setStyleSheet("background-color: orange")
+    menuNamesComboBox.setStyleSheet("font-size: 12pt")
+    menuNamesComboBox.addItems(menuNamesText(companyNameComboBox))
+"""
 
 def menuTexts(companyNameComboBox):
     liste = []
-    newList = []
-    bigList = []
     db = connectToCompanyDataDb(companyNameComboBox)
     cursor = db.cursor()
     sql = "SELECT * FROM menuoptions"
     cursor.execute(sql)
     for x in cursor.fetchall():
         liste.append(x)
-        for x in liste:
-            newList.append(x)
-        bigList.append(newList)
-        liste = []
-        newList = []
-    print(liste)
     db.close()
-    return bigList
+    return liste
 
+"""
+def menuNamesText(companyNameComboBox):
+    liste = []
+    db = connectToCompanyDataDb(companyNameComboBox)
+    cursor = db.cursor()
+    sql = "SELECT name FROM menuoptions"
+    cursor.execute(sql)
+    for x in cursor.fetchall():
+        liste.append(x[0])
+    return liste
+"""
 
 def menuNameText():
     global menuName

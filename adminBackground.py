@@ -16,7 +16,7 @@ butonColor = "orange"
 
 
 def adminBackground(self):
-    global registerButton, refleshButton, deleteButton, comboBox, addCategoryToCompany, addfoodToCompany, deleteFoodsButton, deletecategorysButton, addProductButton, addUserButton, deleteUserButton, menuOptionsButton
+    global registerButton, refleshButton, deleteButton, comboBox, addCategoryToCompany, addfoodToCompany, deleteFoodsButton, deletecategorysButton, addProductButton, addUserButton, deleteUserButton, menuAddButton, menuSelectButton
     companyList = companyNameList()
     companyList.remove("admin")
     self.setWindowTitle("Admin")
@@ -95,18 +95,22 @@ def adminBackground(self):
                                    "{"
                                    f"background-color : {butonColor};"
                                    "}")
-    menuOptionsButton = QPushButton("MenuOptions", self)
-    menuOptionsButton.setGeometry(10, 460, 100, 40)
-    menuOptionsButton.setStyleSheet("QPushButton"
-                                    "{"
-                                    f"background-color : {butonColor};"
-                                    "}")
+    menuAddButton = QPushButton("MenuAdd", self)
+    menuAddButton.setGeometry(10, 460, 100, 40)
+    menuAddButton.setStyleSheet("QPushButton"
+                                "{"
+                                f"background-color : {butonColor};"
+                                "}")
+    menuSelectButton = QPushButton("Menu Select/Remove", self)
+    menuSelectButton.setGeometry(10, 510, 100, 40)
+    menuSelectButton.setStyleSheet("QPushButton"
+                                   "{"
+                                   f"background-color : {butonColor};"
+                                   "}")
 
 
 def data(self):
     startX = 300
-    comboBoxName = comboBoxFunction().currentText()
-    print(comboBoxName)
     for x in elemanList:
         startX += 110
         startY = 20
@@ -178,5 +182,10 @@ def deleteUserFunction():
 
 
 def menuOptionsFunction():
-    global menuOptionsButton
-    return menuOptionsButton
+    global menuAddButton
+    return menuAddButton
+
+
+def menuSelectButtonFunction():
+    global menuSelectButton
+    return menuSelectButton

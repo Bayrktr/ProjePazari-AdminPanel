@@ -1,5 +1,4 @@
 import re
-
 import mysql.connector
 from PyQt5.QtCore import QRect, QPropertyAnimation
 from PyQt5.QtGui import QFont
@@ -24,6 +23,8 @@ from deleteUserBackground import *
 from deleteUserFunction import *
 from menuOptionsBackground import *
 from menuOptionsFunction import menuRecordFunction
+from menuSelectFunction import *
+from menuSelectBackground import *
 
 
 class signInPart(QWidget):
@@ -54,6 +55,7 @@ class adminPart(QMainWindow):
         addUserButtonFunction().clicked.connect(self.addUserOpen)
         deleteUserFunction().clicked.connect(self.deleteUserOpen)
         menuOptionsFunction().clicked.connect(self.menuOptionsOpen)
+        menuSelectButtonFunction().clicked.connect(self.menuSelectOpen)
 
     def openRegisterCompany(self):
         self.registerWindow = registerPart()
@@ -130,6 +132,12 @@ class adminPart(QMainWindow):
     def menuOptionsOpen(self):
         self.menuOptionsWindow = menuOptionsPart()
         self.menuOptionsWindow.show()
+
+    def menuSelectOpen(self):
+        companyNameComboBox = comboBoxFunction().currentText()
+        if allMenuNames(companyNameComboBox) != 0:
+            self.menuSelectWindow = menuSelectPart()
+            self.menuSelectWindow.show()
 
 
 class registerPart(QWidget):
@@ -373,37 +381,60 @@ class menuOptionsPart(QWidget):
         menuRecordButtonFunction().clicked.connect(self.menuRecord)
 
     def menuRecord(self):
-        menuName, height, widght, fontColor, titleColor, fontType, startX, startY, categoryBetween, fontSize, titleSize, fontBetweenSize, titleBetweenSizeX, titleBetweenSizeY, priceColor, unitName = menuNameText(), menuHeightText(), menuWidghtText(), fontColorText(), titleColorText(), fontTypeText(), startXText(), startYText(), categoryBetweenText(), fontSizeText(), titleSizeText(), fontBetweenSizeText(), titleBetweenSizeXText(), titleBetweenSizeYText(), priceColorText(), unitNameText()
-        noneStrList = [str(height), str(widght), str(startX), str(startY), str(categoryBetween), str(fontSize),
-                       str(titleSize), str(fontBetweenSize), str(titleBetweenSizeX), str(titleBetweenSizeY)]
-        noneIntList = [str(menuName),str(fontColor), str(titleColor), str(priceColor), str(unitName),str(fontType)]
-        flag = True
-        print(noneStrList , noneIntList)
-        for x in noneStrList:
-            if len(re.findall("\D+", x)) != 0:
-                print(re.findall("\D+", x))
-                print(x)
-                print("STR")
-                flag = False
-                break
-        for x in noneIntList:
-
-            if len(re.findall("\d+", x)) != 0:
-                print(x)
-                print("INT")
-                flag = False
-                break
-        print(flag)
-        if flag:
-            companyNameComboBox = comboBoxFunction().currentText()
-            noneStrList.extend(noneIntList)
-            menuRecordFunction(noneStrList,companyNameComboBox)
-            self.reflesh()
+        companyNameComboBox = comboBoxFunction().currentText()
+        menuName, height, widght, fontColor, titleColor, fontType, fontSize, titleSize, categoryBetween, startX, startY, fontBetweenSize, titleBetweenSizeX, titleBetweenSizeY, priceColor, unitName = menuNameText(), menuHeightText(), menuWidghtText(), fontColorText(), titleColorText(), fontTypeText(), startXText(), startYText(), categoryBetweenText(), fontSizeText(), titleSizeText(), fontBetweenSizeText(), titleBetweenSizeXText(), titleBetweenSizeYText(), priceColorText(), unitNameText()
+        if menuName not in allMenuNames(companyNameComboBox):
+            noneStrList = [str(height), str(widght), str(startX), str(startY), str(categoryBetween), str(fontSize),
+                           str(titleSize), str(fontBetweenSize), str(titleBetweenSizeX), str(titleBetweenSizeY)]
+            noneIntList = [str(fontColor), str(titleColor), str(priceColor), str(unitName),
+                           str(fontType)]
+            flag = True
+            for x in noneStrList:
+                if len(re.findall("\D+", x)) != 0 or len(re.findall("\s", x)) != 0:
+                    flag = False
+                    break
+            for x in noneIntList:
+                if len(re.findall("\d+", x)) != 0 or len(re.findall("\s", x)) != 0:
+                    flag = False
+                    break
+            if flag:
+                menuDatas = [str(menuName), str(height), str(widght), str(fontColor), str(titleColor), str(fontType),
+                             str(startX), str(startY), str(categoryBetween), str(fontSize), str(titleSize),
+                             str(fontBetweenSize), str(titleBetweenSizeX), str(titleBetweenSizeY), str(priceColor),
+                             str(unitName)]
+                menuRecordFunction(menuDatas, companyNameComboBox)
+                self.reflesh()
 
     def reflesh(self):
         self.close()
         self.menuOptionsWindow = menuOptionsPart()
         self.menuOptionsWindow.show()
+
+
+class menuSelectPart(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.companyNameComboBox = comboBoxFunction().currentText()
+        companyNameComboBox = self.companyNameComboBox
+        selectMenuBackground(self, companyNameComboBox)
+        deleteMenuButtonFunction().clicked.connect(self.deleteMenu)
+        selectMenuButtonFunction().clicked.connect(self.selectMenu)
+
+    def deleteMenu(self):
+        menuName = selectMenuNameComboBoxFunction().currentText()
+        companyNameComboBox = self.companyNameComboBox
+        deleteMenu(menuName, companyNameComboBox)
+        self.reflesh()
+
+    def selectMenu(self):
+        menuName = selectMenuNameComboBoxFunction().currentText()
+        companyNameComboBox = self.companyNameComboBox
+        selectMenuFunc(menuName, companyNameComboBox)
+
+    def reflesh(self):
+        self.close()
+        self.menuSelectWindow = menuSelectPart()
+        self.menuSelectWindow.show()
 
 
 if __name__ == "__main__":

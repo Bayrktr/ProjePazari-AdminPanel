@@ -5,27 +5,24 @@ import string
 import sys
 from datetime import datetime
 import mysql.connector
-from addCategoryFunction import *
 from adminFunction import timeSettings
+from addCategoryFunction import *
 
-
-def menuRecordFunction(noneStrList, companyNameComboBox):
-    print(noneStrList)
-    print(len(noneStrList))
+def menuRecordFunction(menuDatas, companyNameComboBox):
+    arg = ['name', 'height', 'widght', 'fontColor', 'titleColor', 'fontType', 'fontSize', 'titleSize',
+           'categoryBetween', 'startX', 'startY', 'fontBetweenSize', 'titleBetweenSizeX', 'titleBetweenSizeY',
+           'priceColor', 'unitName',
+           'flag', 'crdate']
+    argWords = ",".join(arg)
+    menuDatas.append("0")
+    menuDatas.append("{}".format(timeSettings()))
     word = ""
-    for x in noneStrList:
-        word += "'{}',".format(x)
-
-    print(word)
-    arg = ['height', 'widght', 'startX', 'startY', 'categoryBetween', 'fontSize', 'titleSize', 'fontBetweenSize',
-           'fontBetweenSizeX', 'fontBetweenSizeY', 'name', 'fontColor', 'titleColor', 'priceColor', 'unitName',
-           'fontType',
-           'crdate']
-    print(len(arg))
-    arg = ",".join(arg)
-    print(arg)
+    for x in menuDatas:
+        word += "'{}' ".format(x)
+    word = word.split()
+    word = ",".join(word)
     db = connectToCompanyDataDb(companyNameComboBox)
     cursor = db.cursor()
-    sql = f"INSERT INTO menuoptions ({arg}) VALUES ({word}'{timeSettings()}')"
+    sql = f"INSERT INTO menuoptions ({argWords}) VALUES ({word})"
     cursor.execute(sql)
     db.commit()
